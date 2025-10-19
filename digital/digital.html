@@ -1,0 +1,886 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Jharkhand Darshan - Certificate Platform</title>
+    <!-- Ethers.js for blockchain interaction -->
+    <script src="https://cdn.ethers.io/lib/ethers-5.2.umd.min.js"></script>
+    <!-- Google Fonts for better typography -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Font Awesome for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <style>
+        /* --- Base & Variables --- */
+        :root {
+            --primary: #1E504E;
+            --primary-light: #2A6F6C;
+            --secondary: #E8B44A;
+            --background: #F8F9FA;
+            --surface: #FFFFFF;
+            --text: #212121;
+            --text-muted: #757575;
+            --border-color: #E0E0E0;
+            --success: #28a745;
+            --error: #dc3545;
+        }
+
+        /* --- General Styles --- */
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: var(--background);
+            color: var(--text);
+            margin: 0;
+            line-height: 1.6;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        /* --- Header --- */
+        .header {
+            background: linear-gradient(135deg, var(--primary), var(--primary-light));
+            color: white;
+            padding: 2rem 1.5rem;
+            text-align: center;
+            border-bottom-left-radius: 20px;
+            border-bottom-right-radius: 20px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .header h1 {
+            font-family: 'Playfair Display', serif;
+            margin: 0;
+            font-size: 2.5rem;
+        }
+        
+        .header p {
+            margin: 0.5rem 0 0;
+            opacity: 0.9;
+        }
+        
+        /* --- Navigation --- */
+        nav {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            padding: 1.5rem 0;
+            background-color: var(--surface);
+            border-radius: 12px;
+            margin-top: -30px;
+            position: relative;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+        }
+
+        nav a {
+            color: var(--primary);
+            text-decoration: none;
+            font-weight: 600;
+            padding: 10px 20px;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        nav a:hover, nav a.active {
+            background-color: var(--primary);
+            color: white;
+        }
+
+        /* --- Main Content & Cards --- */
+        .main-view {
+            padding: 2rem 0;
+        }
+
+        .card {
+            background-color: var(--surface);
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+            border: 1px solid var(--border-color);
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.08);
+        }
+        .card-content {
+            padding: 24px;
+            flex-grow: 1;
+        }
+
+        .card-footer {
+            padding: 16px 24px;
+            background-color: #FDFDFD;
+            border-top: 1px solid var(--border-color);
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            gap: 25px;
+        }
+
+        h2 {
+            font-family: 'Playfair Display', serif;
+            color: var(--primary);
+            text-align: center;
+            margin-bottom: 2rem;
+            font-size: 2rem;
+        }
+        
+        /* --- Form Elements & Buttons --- */
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: var(--primary-light);
+        }
+
+        input[type="text"], input[type="password"], textarea, select {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            box-sizing: border-box;
+            transition: border-color 0.3s, box-shadow 0.3s;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        input:focus, textarea:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(30, 80, 78, 0.1);
+        }
+
+        textarea {
+            min-height: 100px;
+            resize: vertical;
+        }
+
+        .btn, .btn-primary, .btn-secondary {
+            display: inline-block;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 8px;
+            font-weight: 600;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 1rem;
+            text-decoration: none;
+            flex: 1;
+        }
+
+        .btn-primary {
+            background-color: var(--primary);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background-color: var(--primary-light);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+        }
+
+        .btn-secondary {
+            background-color: #e9ecef;
+            color: var(--text);
+            border: 1px solid #dee2e6;
+        }
+        .btn-secondary:hover {
+            background-color: #dee2e6;
+        }
+
+        .row {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+        }
+
+        button:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
+        /* --- Specific Component Styles --- */
+        #svg_container {
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            margin-top: 1rem;
+            min-height: 200px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background-color: #f8f8f8;
+        }
+        #svg_container svg {
+            width: 100%;
+            height: auto;
+        }
+        #signature_box, #verify_result {
+            margin-top: 1rem;
+            padding: 1rem;
+            border-radius: 8px;
+            background-color: #f8f8f8;
+            border: 1px solid var(--border-color);
+            font-family: monospace;
+            white-space: pre-wrap;
+            word-break: break-all;
+            font-size: 12px;
+        }
+        
+        .badge {
+            padding: 3px 8px;
+            border-radius: 5px;
+            font-size: 10px;
+            font-weight: 700;
+            text-transform: uppercase;
+            margin-left: 8px;
+        }
+        .badge.premium { background-color: var(--secondary); color: var(--text); }
+        .badge.standard { background-color: var(--text-muted); color: white; }
+
+        .last-item {
+            padding: 10px;
+            border-bottom: 1px solid var(--border-color);
+        }
+        .last-item:last-child { border-bottom: none; }
+        
+        .muted { color: var(--text-muted); }
+        .small { font-size: 0.9em; }
+
+        /* --- Login/Status Styles --- */
+        #login-status .success, #verify_result .success { color: var(--success); background-color: #e9f7eb; border: 1px solid var(--success); padding: 1rem; border-radius: 8px; }
+        #login-status .error, #verify_result .error { color: var(--error); background-color: #fdeded; border: 1px solid var(--error); padding: 1rem; border-radius: 8px; }
+
+        /* --- Tourist View Specifics --- */
+        .filter-bar {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin-bottom: 2rem;
+            flex-wrap: wrap;
+        }
+        .btn-filter {
+            background-color: var(--surface);
+            color: var(--primary);
+            border: 1px solid var(--border-color);
+        }
+        .btn-filter.active {
+            background-color: var(--primary);
+            color: white;
+            border-color: var(--primary);
+        }
+        .verified-badge {
+            background-color: #e9f7eb;
+            color: #1e7e34;
+            padding: 6px 12px;
+            border-radius: 50px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
+        
+        /* --- Animations --- */
+        .animated-card {
+             opacity: 0;
+             transform: translateY(30px);
+             animation: fadeInUp 0.6s ease-out forwards;
+        }
+        @keyframes fadeInUp {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .loading-spinner {
+            display: inline-block;
+            width: 1em;
+            height: 1em;
+            border: 2px solid currentColor;
+            border-right-color: transparent;
+            border-radius: 50%;
+            animation: spin 0.75s linear infinite;
+            margin-left: 8px;
+            vertical-align: middle;
+        }
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .header h1 { font-size: 2rem; }
+            .grid { grid-template-columns: 1fr; }
+            nav { flex-direction: column; align-items: stretch; text-align: center; }
+        }
+    </style>
+</head>
+<body>
+
+    <header class="header">
+        <h1>Jharkhand Darshan</h1>
+        <p id="header-subtitle">Blockchain-Enabled Tourism Platform</p>
+    </header>
+
+    <div class="container">
+        <!-- Main navigation for public -->
+        <nav id="main-nav">
+            <a href="#" onclick="showView('tourist-view')"><i class="fas fa-users"></i> Service Providers</a>
+            <a href="#" onclick="showView('verification-view')"><i class="fas fa-check-circle"></i> Verify Certificate</a>
+            <a href="#" onclick="showView('login-view')"><i class="fas fa-sign-in-alt"></i> Admin Login</a>
+        </nav>
+
+        <!-- Navigation for logged-in admins -->
+        <nav id="admin-nav" style="display: none;">
+            <a href="#" onclick="showView('dashboard-view')"><i class="fas fa-tachometer-alt"></i> Dashboard</a>
+            <a href="#" onclick="showView('verification-view')"><i class="fas fa-check-circle"></i> Verify Certificate</a>
+            <span id="admin-user-display" style="padding: 10px 20px; color: var(--text-muted); align-self: center;"></span>
+            <a href="#" onclick="logout()"><i class="fas fa-sign-out-alt"></i> Logout</a>
+        </nav>
+        
+        <main>
+            <!-- View 1: Tourist/Public View -->
+            <div id="tourist-view" class="main-view">
+                <h2>Verified Service Providers</h2>
+                <div class="filter-bar">
+                    <button class="btn btn-filter active" onclick="filterProviders('all')"><i class="fas fa-globe"></i> All</button>
+                    <button class="btn btn-filter" onclick="filterProviders('guide')"><i class="fas fa-map-signs"></i> Guides</button>
+                    <button class="btn btn-filter" onclick="filterProviders('artisan')"><i class="fas fa-paint-brush"></i> Artisans</button>
+                    <button class="btn btn-filter" onclick="filterProviders('homestay')"><i class="fas fa-home"></i> Homestays</button>
+                </div>
+                <div id="provider-list" class="grid">
+                    <!-- Provider cards will be injected here -->
+                </div>
+            </div>
+
+            <!-- View 2: Admin Login -->
+            <div id="login-view" class="main-view" style="display: none;">
+                <div class="card animated-card" style="max-width: 450px; margin: 2rem auto;">
+                    <div class="card-content">
+                        <h2>Admin Login</h2>
+                        <div class="form-group">
+                            <label for="username">Admin Name</label>
+                            <input type="text" id="username" placeholder="Enter your full name">
+                        </div>
+                        <div class="form-group">
+                            <label for="password">Password</label>
+                            <input type="password" id="password" placeholder="Enter your password">
+                        </div>
+                         <div id="login-status" style="margin-top: 1rem;"></div>
+                    </div>
+                    <div class="card-footer">
+                        <button id="loginBtn" class="btn-primary" style="width: 100%;">Login</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- View 3: Admin Dashboard -->
+            <div id="dashboard-view" class="main-view" style="display: none;">
+                <div class="grid" style="grid-template-columns: 2fr 1fr; align-items: start;">
+                    <div class="card animated-card">
+                        <div class="card-content">
+                            <h2>Issue New Certificate</h2>
+                             <div class="form-group">
+                                <label for="cert_recipient">Recipient Name</label>
+                                <input type="text" id="cert_recipient" placeholder="e.g., Ramesh Singh">
+                            </div>
+                            <div class="form-group">
+                                <label for="cert_title">Certificate Title</label>
+                                <input type="text" id="cert_title" value="Certified Wildlife Guide">
+                            </div>
+                            <div class="form-group">
+                                <label for="cert_notes">Notes / Description</label>
+                                <textarea id="cert_notes">Verified guide with 5+ years of experience.</textarea>
+                            </div>
+                             <div id="svg_container"></div>
+                             <div id="signature_box" style="display:none;"></div>
+                        </div>
+                        <div class="card-footer">
+                             <div class="row">
+                                <button id="previewCert" class="btn-secondary"><i class="fas fa-eye"></i> Preview</button>
+                                <button id="signCert" class="btn-primary"><i class="fas fa-signature"></i> Sign & Issue</button>
+                                <button id="issuePremiumCert" class="btn-primary" style="background: var(--secondary);"><i class="fas fa-star"></i> Issue Premium</button>
+                                <button id="downloadCert" class="btn-secondary"><i class="fas fa-download"></i> Download</button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card animated-card">
+                        <div class="card-content">
+                            <h3>Recently Issued</h3>
+                            <div id="last_list"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- View 4: Verification -->
+            <div id="verification-view" class="main-view" style="display: none;">
+                <div class="card animated-card" style="max-width: 700px; margin: 2rem auto;">
+                    <div class="card-content">
+                        <h2>Verify Certificate Authenticity</h2>
+                        <div class="form-group">
+                            <label for="verify_input">Paste Certificate JSON</label>
+                            <textarea id="verify_input" placeholder="Paste the full JSON object of the certificate here..."></textarea>
+                        </div>
+                        <div id="verify_result">
+                             <div class="muted" style="text-align: center;">Verification result will appear here.</div>
+                        </div>
+                    </div>
+                    <div class="card-footer">
+                        <div class="row">
+                             <button id="verifyHash" class="btn-primary"><i class="fas fa-shield-alt"></i> Verify Signature</button>
+                             <button id="verifyChain" class="btn-secondary"><i class="fas fa-database"></i> Check Record</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- View 5: NEW Booking Page -->
+            <div id="booking-view" class="main-view" style="display: none;">
+                <div class="card animated-card" style="max-width: 500px; margin: 2rem auto;">
+                    <div class="card-content" style="text-align: center;">
+                        <h2>Complete Your Booking</h2>
+                        <p class="muted">Scan the QR code below to complete the payment.</p>
+                        <h3 id="booking-provider-name" style="margin-top: 1rem; margin-bottom: 0.5rem; font-family: 'Playfair Display', serif;">Provider Name</h3>
+                        <p id="booking-provider-title" class="muted" style="margin-top: 0;">Service Title</p>
+                        <img id="qr-code-image" src="https://placehold.co/250x250/ffffff/333333?text=QR+Code" alt="QR Code for Payment" style="margin: 1.5rem 0; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.1);">
+                    </div>
+                    <div class="card-footer">
+                        <div class="row">
+                             <button class="btn-secondary" onclick="showView('tourist-view')"><i class="fas fa-arrow-left"></i> Back</button>
+                             <button id="paidBtn" class="btn-primary" style="background-color: var(--success);"><i class="fas fa-check"></i> I Have Paid</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+             <!-- View 6: NEW Booked Confirmation Page -->
+            <div id="booked-view" class="main-view" style="display: none;">
+                <div class="card animated-card" style="max-width: 500px; margin: 2rem auto; text-align: center;">
+                    <div class="card-content" style="padding: 3rem 2rem;">
+                        <i class="fas fa-check-circle" style="font-size: 5rem; color: var(--success); margin-bottom: 1.5rem; animation: fadeInUp 0.5s;"></i>
+                        <h1 style="font-family: 'Playfair Display', serif; font-size: 3rem; margin: 0;">BOOKED</h1>
+                        <p class="muted">Your booking is confirmed. Thank you!</p>
+                    </div>
+                    <div class="card-footer">
+                         <button class="btn-primary" onclick="showView('tourist-view')"><i class="fas fa-home"></i> Back to Home</button>
+                    </div>
+                </div>
+            </div>
+
+        </main>
+    </div>
+
+<script>
+// --- MOCK DATABASE of issued certificates for the public view --- 
+ const mockCertificates = [ 
+     // Guides (10) 
+     { 
+         "payload": { "id": "JD-1721212002", "isPremium": false, "title": "Certified Wildlife Guide", "recipient": "Ramesh Singh", "notes": "Verified guide for Betla National Park with 5+ years of experience.", "issuer": "Jharkhand Darshan Authority", "date": "14/07/2024"}, 
+         "hash": "0x4d5e6f...", "signature": "0x...", "address": "ramesh.singh@upi"
+     }, 
+     { 
+         "payload": { "id": "JD-1721214004", "isPremium": false, "title": "Certified Trekking Guide", "recipient": "Alok Tudu", "notes": "Expert in leading treks through the Parasnath Hills with a focus on safety and local flora.", "issuer": "Jharkhand Darshan Authority", "date": "11/07/2024"}, 
+         "hash": "0xj1k2l3...", "signature": "0x...", "address": "alok.tudu@upi"
+     }, 
+     { 
+         "payload": { "id": "JD-1721217007", "isPremium": false, "title": "Cultural Heritage Guide", "recipient": "Priya Kumari", "notes": "Specializes in the history and stories of Jharkhand's ancient temples and monuments.", "issuer": "Jharkhand Darshan Authority", "date": "08/07/2024"}, 
+         "hash": "0xs1t2u3...", "signature": "0x...", "address": "priya.kumari@upi" 
+     }, 
+     { 
+         "payload": { "id": "JD-1721223013", "isPremium": true, "title": "Waterfall Exploration Guide", "recipient": "Arjun Oraon", "notes": "Specializes in guiding tourists to the hidden waterfalls and natural pools of Jharkhand.", "issuer": "Jharkhand Darshan Authority", "date": "02/07/2024"}, 
+         "hash": "0x...", "signature": "0x...", "address": "arjun.oraon@upi" 
+     }, 
+     { 
+         "payload": { "id": "JD-1721224014", "isPremium": false, "title": "Historical Sites Guide", "recipient": "Meena Soren", "notes": "An expert storyteller who brings the history of Maluti temples and ancient forts to life.", "issuer": "Jharkhand Darshan Authority", "date": "01/07/2024"}, 
+         "hash": "0x...", "signature": "0x...", "address": "meena.soren@upi" 
+     }, 
+     { 
+         "payload": { "id": "JD-1721225015", "isPremium": false, "title": "Bird Watching Guide", "recipient": "Suraj Mahto", "notes": "Leads tours in the Udhwa Lake Bird Sanctuary, identifying rare and migratory species.", "issuer": "Jharkhand Darshan Authority", "date": "30/06/2024"}, 
+         "hash": "0x...", "signature": "0x...", "address": "suraj.mahto@upi" 
+     }, 
+     { 
+         "payload": { "id": "JD-1721226016", "isPremium": false, "title": "Village Life Experience Guide", "recipient": "Deepa Bhagat", "notes": "Offers immersive tours into local tribal villages, showcasing their culture and lifestyle.", "issuer": "Jharkhand Darshan Authority", "date": "29/06/2024"}, 
+         "hash": "0x...", "signature": "0x...", "address": "deepa.bhagat@upi"
+     }, 
+     { 
+         "payload": { "id": "JD-1721227017", "isPremium": true, "title": "Rock Art & Cave Guide", "recipient": "Vikram Hansda", "notes": "Expert on the prehistoric rock art found in the Isko caves of Hazaribagh.", "issuer": "Jharkhand Darshan Authority", "date": "28/06/2024"}, 
+         "hash": "0x...", "signature": "0x...", "address": "vikram.hansda@upi"
+     }, 
+     { 
+         "payload": { "id": "JD-1721228018", "isPremium": false, "title": "Dam & Reservoir Guide", "recipient": "Santosh Bedia", "notes": "Provides insightful tours of the major dams like Panchet and Maithon, explaining their significance.", "issuer": "Jharkhand Darshan Authority", "date": "27/06/2024"}, 
+         "hash": "0x...", "signature": "0x...", "address": "santosh.bedia@upi"
+     }, 
+     { 
+         "payload": { "id": "JD-1721229019", "isPremium": false, "title": "Botanical Garden Guide", "recipient": "Anita Kachhap", "notes": "A botany enthusiast guiding visitors through the diverse flora at the Birsa Munda Botanical Garden.", "issuer": "Jharkhand Darshan Authority", "date": "26/06/2024"}, 
+         "hash": "0x...", "signature": "0x...", "address": "anita.kachhap@upi"
+     }, 
+     // Artisans (10) 
+     { 
+         "payload": { "id": "JD-1721213001", "isPremium": true, "title": "Master Sohrai Artist", "recipient": "Parvati Devi", "notes": "Authenticated as a master artist of Sohrai art, preserving traditional techniques.", "issuer": "Jharkhand Darshan Authority", "date": "15/07/2024"}, 
+         "hash": "0x1a2b3c...", "signature": "0x...", "address": "parvati.devi@upi"
+     }, 
+     { 
+         "payload": { "id": "JD-1721215005", "isPremium": true, "title": "Dhokra Metal Artisan", "recipient": "Mohan Karmakar", "notes": "A traditional Dhokra artist creating exquisite bell metal crafts passed down through generations.", "issuer": "Jharkhand Darshan Authority", "date": "10/07/2024"}, 
+         "hash": "0xm4n5o6...", "signature": "0x...", "address": "mohan.karmakar@upi"
+     }, 
+     { 
+         "payload": { "id": "JD-1721218008", "isPremium": false, "title": "Paitkar Painting Specialist", "recipient": "Savitri Murmu", "notes": "Reviving the ancient art of Paitkar scroll painting, telling stories of local folklore.", "issuer": "Jharkhand Darshan Authority", "date": "07/07/2024"}, 
+         "hash": "0xv4w5x6...", "signature": "0x...", "address": "savitri.murmu@upi"
+     }, 
+     { 
+         "payload": { "id": "JD-1721220010", "isPremium": false, "title": "Bamboo Craft Artisan", "recipient": "Birsa Munda", "notes": "Creates intricate and functional items from locally sourced bamboo.", "issuer": "Jharkhand Darshan Authority", "date": "05/07/2024"}, 
+         "hash": "0xb1c2d3...", "signature": "0x...", "address": "birsa.munda@upi"
+     }, 
+     { 
+         "payload": { "id": "JD-1721221011", "isPremium": false, "title": "Terracotta Potter", "recipient": "Lakshmi Prajapati", "notes": "Handcrafts traditional terracotta pottery, from utensils to decorative items.", "issuer": "Jharkhand Darshan Authority", "date": "04/07/2024"}, 
+         "hash": "0xe4f5g6...", "signature": "0x...", "address": "lakshmi.prajapati@upi"
+     }, 
+     { 
+         "payload": { "id": "JD-1721222012", "isPremium": true, "title": "Traditional Weaver", "recipient": "Sohini Das", "notes": "Weaves beautiful textiles using traditional Jharkhandi looms and patterns.", "issuer": "Jharkhand Darshan Authority", "date": "03/07/2024"}, 
+         "hash": "0xh7i8j9...", "signature": "0x...", "address": "sohini.das@upi"
+     }, 
+     { 
+         "payload": { "id": "JD-1721230020", "isPremium": false, "title": "Iron Craft Artisan (Loha Shilp)", "recipient": "Ratan Lohar", "notes": "Forges traditional tribal iron crafts and decorative items using age-old techniques.", "issuer": "Jharkhand Darshan Authority", "date": "25/06/2024"}, 
+         "hash": "0x...", "signature": "0x...", "address": "ratan.lohar@upi"
+     }, 
+     { 
+         "payload": { "id": "JD-1721231021", "isPremium": false, "title": "Jute Craft Specialist", "recipient": "Bela Chakraborty", "notes": "Creates eco-friendly and stylish bags, mats, and decor from natural jute fibers.", "issuer": "Jharkhand Darshan Authority", "date": "24/06/2024"}, 
+         "hash": "0x...", "signature": "0x...", "address": "bela.chakraborty@upi"
+     }, 
+     { 
+         "payload": { "id": "JD-1721232022", "isPremium": false, "title": "Wood Carver", "recipient": "Mangal Singh Munda", "notes": "Sculpts intricate designs and figures on wood, reflecting tribal motifs and stories.", "issuer": "Jharkhand Darshan Authority", "date": "23/06/2024"}, 
+         "hash": "0x...", "signature": "0x...", "address": "mangal.munda@upi"
+     }, 
+     { 
+         "payload": { "id": "JD-1721233023", "isPremium": true, "title": "Grass Weaving Artisan", "recipient": "Sumitra Devi", "notes": "Weaves beautiful and durable baskets, mats, and accessories from Sabai grass.", "issuer": "Jharkhand Darshan Authority", "date": "22/06/2024"}, 
+         "hash": "0x...", "signature": "0x...", "address": "sumitra.devi@upi"
+     }, 
+     // Homestays (10) 
+     { 
+         "payload": { "id": "JD-1721211003", "isPremium": false, "title": "Authentic Rural Homestay", "recipient": "Sunita & Raj Kumar", "notes": "Providing an authentic and hospitable rural stay experience near Netarhat.", "issuer": "Jharkhand Darshan Authority", "date": "12/07/2024"}, 
+         "hash": "0x7g8h9i...", "signature": "0x...", "address": "sunita.rajkumar@upi"
+     }, 
+      { 
+         "payload": { "id": "JD-1721216006", "isPremium": false, "title": "Scenic Valley Homestay", "recipient": "The Gupta Family", "notes": "A peaceful homestay offering stunning views of the Patratu Valley.", "issuer": "Jharkhand Darshan Authority", "date": "09/07/2024"}, 
+         "hash": "0xp7q8r9...", "signature": "0x...", "address": "gupta.family@upi"
+     }, 
+     { 
+         "payload": { "id": "JD-1721219009", "isPremium": true, "title": "Riverside Homestay", "recipient": "Singh's Retreat", "notes": "A comfortable and welcoming stay on the banks of the Subarnarekha river.", "issuer": "Jharkhand Darshan Authority", "date": "06/07/2024"}, 
+         "hash": "0xy7z8a9...", "signature": "0x...", "address": "singh.retreat@upi"
+     }, 
+     { 
+         "payload": { "id": "JD-1721234024", "isPremium": false, "title": "Hill View Cottage, Netarhat", "recipient": "The Kispotta Residence", "notes": "Cozy cottages offering panoramic views of the Netarhat hills and sunrise points.", "issuer": "Jharkhand Darshan Authority", "date": "21/06/2024"}, 
+         "hash": "0x...", "signature": "0x...", "address": "kispotta.residence@upi"
+     }, 
+     { 
+         "payload": { "id": "JD-1721235025", "isPremium": true, "title": "Jungle Abode, Betla", "recipient": "Munda Eco Stays", "notes": "Experience the thrill of the jungle in a safe, comfortable, and eco-friendly setting.", "issuer": "Jharkhand Darshan Authority", "date": "20/06/2024"}, 
+         "hash": "0x...", "signature": "0x...", "address": "munda.eco@upi"
+     }, 
+     { 
+         "payload": { "id": "JD-1721236026", "isPremium": false, "title": "Dam View Villa, Maithon", "recipient": "Roy's Villa", "notes": "A modern homestay with direct views of the Maithon Dam reservoir.", "issuer": "Jharkhand Darshan Authority", "date": "19/06/2024"}, 
+         "hash": "0x...", "signature": "0x...", "address": "roy.villa@upi"
+     }, 
+     { 
+         "payload": { "id": "JD-1721237027", "isPremium": false, "title": "Tribal Heritage Hut, Khunti", "recipient": "Adivasi Connect", "notes": "Stay in traditionally built huts and experience the rich culture of the Munda tribe.", "issuer": "Jharkhand Darshan Authority", "date": "18/06/2024"}, 
+         "hash": "0x...", "signature": "0x...", "address": "adivasi.connect@upi"
+     }, 
+     { 
+         "payload": { "id": "JD-1721238028", "isPremium": false, "title": "City Center Stay, Ranchi", "recipient": "The Urban Nook", "notes": "A convenient and comfortable homestay located in the heart of Ranchi.", "issuer": "Jharkhand Darshan Authority", "date": "17/06/2024"}, 
+         "hash": "0x...", "signature": "0x...", "address": "urban.nook@upi"
+     }, 
+     { 
+         "payload": { "id": "JD-1721239029", "isPremium": true, "title": "Farmhouse Retreat, Hazaribagh", "recipient": "Sinha Organic Farms", "notes": "A serene farm stay offering fresh organic meals and a peaceful environment.", "issuer": "Jharkhand Darshan Authority", "date": "16/06/2024"}, 
+         "hash": "0x...", "signature": "0x...", "address": "sinha.farms@upi"
+     }, 
+     { 
+         "payload": { "id": "JD-1721240030", "isPremium": false, "title": "Pilgrim's Rest, Deoghar", "recipient": "Shanti Niwas", "notes": "A clean and peaceful homestay located conveniently for pilgrims visiting Baidyanath Temple.", "issuer": "Jharkhand Darshan Authority", "date": "15/06/2024"}, 
+         "hash": "0x...", "signature": "0x...", "address": "shanti.niwas@upi"
+     } 
+ ]; 
+
+ // --- DOM Elements --- 
+ const certRecipient = document.getElementById('cert_recipient'); 
+ const signCert = document.getElementById('signCert');
+ const previewCert = document.getElementById('previewCert');
+ const certTitle = document.getElementById('cert_title'); 
+ const certNotes = document.getElementById('cert_notes');
+ const downloadCert = document.getElementById('downloadCert'); 
+ const issuePremiumCert = document.getElementById('issuePremiumCert');
+ const signatureBox = document.getElementById('signature_box'); 
+ const svgContainer = document.getElementById('svg_container');
+ const verifyInput = document.getElementById('verify_input'); 
+ const verifyHash = document.getElementById('verifyHash');
+ const verifyChain = document.getElementById('verifyChain'); 
+ const verifyResult = document.getElementById('verify_result');
+ const lastList = document.getElementById('last_list'); 
+ const usernameInput = document.getElementById('username');
+ const passwordInput = document.getElementById('password'); 
+ const loginBtn = document.getElementById('loginBtn');
+ const loginStatus = document.getElementById('login-status'); 
+ const mainNav = document.getElementById('main-nav'); 
+ const adminNav = document.getElementById('admin-nav'); 
+ const headerSubtitle = document.getElementById('header-subtitle'); 
+ const paidBtn = document.getElementById('paidBtn');
+
+ // --- Core Functions --- 
+ function showView(viewId) { 
+     const isAdminView = ['dashboard-view'].includes(viewId); 
+     const isPublicView = ['tourist-view', 'login-view', 'verification-view', 'booking-view', 'booked-view'].includes(viewId);
+     
+     if (isAdminView && !localStorage.getItem('auth_token')) { 
+         showView('login-view'); 
+         return; 
+     } 
+      
+     document.querySelectorAll('.main-view').forEach(view => view.style.display = 'none'); 
+     const targetView = document.getElementById(viewId); 
+     if (targetView) { 
+         targetView.style.display = 'block'; 
+         targetView.querySelectorAll('.animated-card').forEach(card => { 
+             card.style.animation = 'none'; 
+             setTimeout(() => { 
+                 card.style.animation = 'fadeInUp 0.6s ease-out forwards'; 
+             }, 10); 
+         }); 
+     } 
+      
+     // Update Nav and Subtitle 
+     if (localStorage.getItem('auth_token')) { 
+         mainNav.style.display = 'none'; 
+         adminNav.style.display = 'flex'; 
+         if (isPublicView) {
+            headerSubtitle.textContent = 'Blockchain-Enabled Tourism Platform';
+         } else {
+            headerSubtitle.textContent = 'Admin Certification Panel'; 
+         }
+         const adminUser = localStorage.getItem('admin_user'); 
+         if (adminUser) { 
+             document.getElementById('admin-user-display').innerHTML = `<i class="fas fa-user-circle" style="margin-right: 8px;"></i> Welcome, <strong>${escapeXml(adminUser)}</strong>`; 
+             if (viewId === 'dashboard-view') { 
+                 certRecipient.value = adminUser; 
+             } 
+         } 
+     } else { 
+         mainNav.style.display = 'flex'; 
+         adminNav.style.display = 'none'; 
+         headerSubtitle.textContent = 'Blockchain-Enabled Tourism Platform'; 
+     } 
+ } 
+
+ function logout() { 
+     localStorage.removeItem('auth_token'); 
+     localStorage.removeItem('admin_user'); 
+     showView('tourist-view'); 
+ } 
+
+ const adminCredentials = { 
+     "Pragya Das": "29052005", 
+     "Debojit Dutta": "26072005", 
+     "Debanjan Choubey": "02102005", 
+     "Avrojit Das": "11012007", 
+     "Anirban Bagchi": "16062005", 
+     "Devdyuti De": "07062004" 
+ }; 
+
+ loginBtn.addEventListener('click', () => { 
+     const userName = usernameInput.value.trim(); 
+     const password = passwordInput.value; 
+
+     if (!userName) { 
+         loginStatus.innerHTML = `<div class="error"><i class="fas fa-times-circle"></i> Please enter your name.</div>`; 
+         return; 
+     } 
+
+     if (adminCredentials[userName] && adminCredentials[userName] === password) { 
+         localStorage.setItem('auth_token', 'mock_token_123'); 
+         localStorage.setItem('admin_user', userName); 
+         loginStatus.innerHTML = `<div class="success"><i class="fas fa-check-circle"></i> Login successful, ${escapeXml(userName)}! Redirecting...</div>`; 
+         setTimeout(() => { 
+             showView('dashboard-view'); 
+             refreshLast(); 
+         }, 1000); 
+     } else { 
+         loginStatus.innerHTML = `<div class="error"><i class="fas fa-times-circle"></i> Invalid credentials.</div>`; 
+     } 
+ }); 
+ 
+ paidBtn.addEventListener('click', () => {
+    showView('booked-view');
+ });
+
+ // --- Tourist View Functions --- 
+ function getCategoryFromTitle(title) { 
+     title = title.toLowerCase(); 
+     if (title.includes('guide')) return 'guide'; 
+     if (title.includes('artist') || title.includes('artisan') || title.includes('specialist') || title.includes('potter') || title.includes('weaver') || title.includes('carver')) return 'artisan'; 
+     if (title.includes('homestay') || title.includes('cottage') || title.includes('abode') || title.includes('villa') || title.includes('hut') || title.includes('retreat') || title.includes('rest')) return 'homestay';
+     return 'other'; 
+ } 
+
+ function populateProviders(filter = 'all') { 
+     const container = document.getElementById('provider-list'); 
+      
+     const filteredCerts = mockCertificates.filter(cert => { 
+         if (filter === 'all') return true; 
+         return getCategoryFromTitle(cert.payload.title) === filter; 
+     }); 
+
+     if (filteredCerts.length === 0) { 
+         container.innerHTML = `<p class="muted" style="text-align:center; grid-column: 1 / -1;">No service providers found for this category.</p>`; 
+         return; 
+     } 
+
+     container.innerHTML = filteredCerts.map((cert, index) => ` 
+         <div class="card provider-card animated-card" style="animation-delay: ${index * 0.1}s;"> 
+             <div class="card-content"> 
+                 <div style="margin-bottom: 16px;"> 
+                     <h3 style="font-family: 'Playfair Display', serif; margin:0;">${escapeXml(cert.payload.recipient)}</h3> 
+                     <div class="muted">${escapeXml(cert.payload.title)}</div> 
+                 </div> 
+                 <div class="verified-badge"><i class="fas fa-shield-alt"></i> Blockchain Verified</div> 
+                 <p class="small muted" style="margin-top: 16px;">${escapeXml(cert.payload.notes)}</p> 
+             </div> 
+             <div class="card-footer"> 
+                 <div class="row"> 
+                     <button class="btn-secondary" onclick='showBookingPage(${JSON.stringify(cert)})'><i class="fas fa-wallet"></i> Book Now</button> 
+                     <button class="btn-primary" onclick='verifyProvider(${JSON.stringify(cert)})'><i class="fas fa-check-circle"></i> Verify Certificate</button> 
+                 </div> 
+             </div> 
+         </div> 
+     `).join(''); 
+ } 
+
+ function filterProviders(category) { 
+     document.querySelectorAll('.btn-filter').forEach(btn => btn.classList.remove('active')); 
+     document.querySelector(`.btn-filter[onclick="filterProviders('${category}')"]`).classList.add('active'); 
+     populateProviders(category); 
+ } 
+
+ function verifyProvider(certObject) { 
+     verifyInput.value = JSON.stringify(certObject, null, 2); 
+     showView('verification-view'); 
+     setTimeout(() => verifyHash.click(), 200); 
+ } 
+
+ function showBookingPage(certObject) { 
+     document.getElementById('booking-provider-name').textContent = certObject.payload.recipient; 
+     document.getElementById('booking-provider-title').textContent = certObject.payload.title;
+     const qrCodeImg = document.getElementById('qr-code-image');
+     const upiUrl = `upi://pay?pa=${certObject.address}&pn=${encodeURIComponent(certObject.payload.recipient)}&am=1000&cu=INR&tn=Booking for ${encodeURIComponent(certObject.payload.title)}`;
+     qrCodeImg.src = `https://api.qrserver.com/v1/create-qr-code/?size=250x250&data=${encodeURIComponent(upiUrl)}`;
+     showView('booking-view'); 
+ } 
+
+
+ // --- Certificate & Verification Logic --- 
+ function makeCertificateSVG(data, isPremium = false) { 
+      const qrUrl = encodeURIComponent(`https://jharkhand.darshan/verify?id=${data.id}`); 
+      const qrCodeSvg = `<image href='https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=${qrUrl}&bgcolor=ffffff' x='685' y='465' height='90' width='90'/>`; 
+      const emblemUrl = 'https://upload.wikimedia.org/wikipedia/commons/thumb/e/e0/Jharkhand_State_Emblem.svg/1024px-Jharkhand_State_Emblem.svg.png'; 
+      
+      const primaryColor = isPremium ? '#2A6F6C' : '#1E504E'; 
+      const accentGradient = isPremium ? 'goldFill' : 'primaryFill'; 
+      const mainTitleFont = isPremium ? "'Playfair Display', serif" : "'Poppins', sans-serif"; 
+      const recipientFont = "'Playfair Display', serif"; 
+
+      return `<?xml version="1.0" encoding="UTF-8"?><svg xmlns='http://www.w3.org/2000/svg' width='840' height='594' viewBox='0 0 840 594'><defs><linearGradient id='primaryFill' x1='0' x2='1'><stop offset='0' stop-color='#2A6F6C'/><stop offset='1' stop-color='#5FA09B'/></linearGradient><linearGradient id='goldFill' x1='0' x2='1'><stop offset='0' stop-color='#D4AF37'/><stop offset='1' stop-color='#E8B44A'/></linearGradient><filter id="shadow"><feDropShadow dx="0" dy="2" stdDeviation="3" flood-color="#000" flood-opacity="0.1"/></filter><style><![CDATA[.bg{ fill: #fff; }.border{ fill: none; stroke: url(#${accentGradient}); stroke-width: ${isPremium ? 8 : 4}; }.main-title{ font: 700 32px/1.2 ${mainTitleFont}; fill: ${primaryColor}; }.recipient{ font: 700 48px/1.2 ${recipientFont}; fill: #212121; }.body-text{ font: 400 16px/1.5 'Poppins', sans-serif; fill: #616161; }.label{ font: 600 14px/1 'Poppins', sans-serif; fill: ${primaryColor}; }.subtle{ font: 400 12px/1.4 'Poppins', sans-serif; fill: #757575; }]]></style></defs><rect class='bg' width='100%' height='100%' filter="url(#shadow)" /><rect class='border' x='${isPremium ? 15 : 20}' y='${isPremium ? 15 : 20}' width='${isPremium ? 810 : 800}' height='${isPremium ? 564 : 554}' rx='8' />${isPremium ? "<rect class='border' x='25' y='25' width='790' height='544' rx='4' stroke-width='2'/>" : ''}<image href='${emblemUrl}' x="370" y="50" height="100" width="100" opacity="${isPremium ? 0.15 : 0.1}"/><text x='420' y='190' text-anchor='middle' class='main-title'>Certificate of Authenticity</text><text x='420' y='230' text-anchor='middle' class='body-text'>This certificate is proudly presented to</text><text x='420' y='300' text-anchor='middle' class='recipient'>${escapeXml(data.recipient)}</text><text x='420' y='350' text-anchor='middle' class='body-text'>For exemplary service as a ${escapeXml(data.title)}</text><foreignObject x="120" y="380" width="600" height="60"><p xmlns="http://www.w3.org/1999/xhtml" style="font-family:'Poppins',sans-serif;font-size:16px;color:#616161;text-align:center;">${escapeXml(data.notes)}</p></foreignObject><line x1="80" y1="500" x2="330" y2="500" stroke="#bdbdbd" stroke-width="1"/><text x="80" y="520" class="label">Jharkhand Darshan Authority</text><text x="80" y="540" class="subtle">Issuer</text><line x1="420" y1="500" x2="580" y2="500" stroke="#bdbdbd" stroke-width="1"/><text x="420" y="520" class="label">${data.date}</text><text x="420" y="540" class="subtle">Date of Issue</text>${qrCodeSvg}<text x="730" y="460" text-anchor="middle" class="subtle">Verify Certificate</text><text x="730" y="570" text-anchor="middle" class="subtle" style="font-size:10px;">ID: ${data.id}</text></svg>`; 
+ } 
+ function escapeXml(unsafe) { return unsafe ? String(unsafe).replace(/[&<>'"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&apos;' })[c]) : ''; } 
+
+ function makeCertPayload(isPremium = false) {  
+     const recipientName = certRecipient.value; 
+     if (!recipientName) { 
+         alert("Recipient Name cannot be empty."); 
+         return null; 
+     } 
+     return { id: 'JD-' + Date.now(), isPremium, title: certTitle.value, recipient: recipientName, notes: certNotes.value, issuer: 'Jharkhand Darshan Authority', date: new Date().toLocaleDateString('en-IN') };  
+ } 
+
+ previewCert.addEventListener('click', () => {  
+     const payload = makeCertPayload(false);  
+     if(payload) { 
+         svgContainer.innerHTML = makeCertificateSVG(payload, false);  
+     } 
+ }); 
+
+ async function signAndIssue(isPremium = false) { 
+     const btn = isPremium ? issuePremiumCert : signCert; const originalText = btn.innerHTML; btn.disabled = true; btn.innerHTML = `Signing...<span class="loading-spinner"></span>`; 
+     const payload = makeCertPayload(isPremium);  
+     if (!payload) { 
+         btn.disabled = false; 
+         btn.innerHTML = originalText; 
+         return; 
+     } 
+     const json = JSON.stringify(payload); const bytes = ethers.utils.toUtf8Bytes(json); const hash = ethers.utils.keccak256(bytes); 
+     let sigObj; 
+     try { 
+         if (window.ethereum) { 
+             await window.ethereum.request({ method: 'eth_requestAccounts' }); const provider = new ethers.providers.Web3Provider(window.ethereum); const signer = provider.getSigner(); const signature = await signer.signMessage(ethers.utils.arrayify(hash)); const address = await signer.getAddress(); sigObj = { payload, hash, signature, address }; 
+         } else { alert("MetaMask (or another Web3 provider) is not detected. Using a mock signature for this demo."); const signature = '0xMOCKSIGN' + Math.random().toString(16).slice(2); const address = isPremium ? '0xJDPREMIUM_MOCK_ISSUER' : '0xJDSTANDARD_MOCK_ISSUER'; sigObj = { payload, hash, signature, address }; } 
+         if (sigObj) { signatureBox.textContent = JSON.stringify(sigObj, null, 2); signatureBox.style.display = 'block'; saveLocalRecord(sigObj); svgContainer.innerHTML = makeCertificateSVG(sigObj.payload, isPremium); } 
+     } catch (e) { signatureBox.textContent = 'Signing failed: ' + e.message; } finally { btn.disabled = false; btn.innerHTML = originalText; } 
+ } 
+ signCert.addEventListener('click', () => signAndIssue(false)); 
+ issuePremiumCert.addEventListener('click', () => { alert('Simulating a secure payment gateway for the premium certificate issuance fee.'); signAndIssue(true); }); 
+ function saveLocalRecord(obj) { const list = JSON.parse(localStorage.getItem('jd_cert_list') || '[]'); list.unshift(obj); localStorage.setItem('jd_cert_list', JSON.stringify(list.slice(0, 10))); refreshLast(); } 
+ function refreshLast() { 
+     const list = JSON.parse(localStorage.getItem('jd_cert_list') || '[]'); 
+     if (!list.length) { lastList.innerHTML = '<div class="muted" style="text-align:center;">No certificates have been issued from this browser yet.</div>'; return; } 
+     lastList.innerHTML = list.map(it => `<div class="last-item"><div style="font-weight:600;color:var(--primary);">${escapeXml(it.payload.recipient)} <span class="badge ${it.payload.isPremium ? 'premium' : 'standard'}">${it.payload.isPremium ? 'PREMIUM' : 'STANDARD'}</span></div><div class="small muted">${escapeXml(it.payload.title)} on ${it.payload.date}</div><div class="small" style="font-weight:500;margin-top:4px; font-family:monospace; font-size: 11px;">Hash: ${it.hash.slice(0, 20)}...</div></div>`).join(''); 
+ } 
+ downloadCert.addEventListener('click', () => { 
+     const svgEl = svgContainer.querySelector('svg'); if (!svgEl) { alert('Please preview or issue a certificate first.'); return; } 
+     const svgData = new XMLSerializer().serializeToString(svgEl); const canvas = document.createElement('canvas'); canvas.width = 840 * 2; canvas.height = 594 * 2; 
+     const img = new Image(); const svgBlob = new Blob([svgData], { type: 'image/svg+xml;charset=utf-8' }); const url = URL.createObjectURL(svgBlob); 
+     img.onload = () => { const ctx = canvas.getContext('2d'); ctx.drawImage(img, 0, 0, canvas.width, canvas.height); URL.revokeObjectURL(url); const a = document.createElement('a'); a.href = canvas.toDataURL('image/png'); a.download = 'jharkhand_darshan_certificate.png'; a.click(); }; img.src = url; 
+ }); 
+ verifyHash.addEventListener('click', async () => { 
+     let j; try { j = JSON.parse(verifyInput.value); } catch (e) { verifyResult.innerHTML = `<div class="error"><i class="fas fa-exclamation-circle"></i> Please paste valid signature JSON.</div>`; return; } 
+     if (j.signature && j.signature.startsWith('0xMOCKSIGN')) {
+          verifyResult.innerHTML = `<div class="success"><i class="fas fa-check-circle"></i> <strong>This is a valid MOCK signature.</strong> This demonstrates a valid certificate issued by:<br><span style="word-wrap:break-all; font-family:monospace; font-size:12px;">${escapeXml(j.address)}</span></div>`; return; 
+     } 
+     if (j.payload && !j.signature) {
+         verifyResult.innerHTML = `<div class="success"><i class="fas fa-check-circle"></i> <strong>This is a valid DEMO certificate.</strong> The displayed data is authentic and issued to:<br><span style="word-wrap:break-all; font-family:monospace; font-size:12px;">${escapeXml(j.payload.recipient)}</span></div>`; return; 
+     } 
+     try { const signerAddr = ethers.utils.verifyMessage(ethers.utils.arrayify(j.hash), j.signature); const isValid = signerAddr.toLowerCase() === j.address.toLowerCase(); const certType = j.payload.isPremium ? 'Premium' : 'Standard'; verifyResult.innerHTML = isValid ? `<div class="success"><i class="fas fa-check-circle"></i> <strong>Signature is valid.</strong> This is a valid ${certType} Certificate issued by:<br><span style="word-wrap:break-all; font-family:monospace; font-size:12px;">${escapeXml(signerAddr)}</span></div>` : `<div class="error"><i class="fas fa-times-circle"></i> Signature mismatch. The certificate is not valid.</div>`; } catch (e) { verifyResult.innerHTML = `<div class="error"><i class="fas fa-exclamation-triangle"></i> Verification failed. Error: ${escapeXml(e.message)}</div>` } 
+ }); 
+ verifyChain.addEventListener('click', () => { 
+     let j; try { j = JSON.parse(verifyInput.value); } catch (e) { verifyResult.innerHTML = `<div class="error"><i class="fas fa-exclamation-circle"></i> Please paste valid signature JSON.</div>`; return; } 
+     const list = JSON.parse(localStorage.getItem('jd_cert_list') || '[]'); const found = list.find(x => x.hash === j.hash) || mockCertificates.find(x => x.hash === j.hash); 
+     verifyResult.innerHTML = found ? '<div class="success"><i class="fas fa-check-circle"></i> The certificate hash was found in our mock records.</div>' : '<div class="muted">Not found in local records. (A real system would query a blockchain or database.)</div>'; 
+ }); 
+
+ // --- Initial Load --- 
+ window.addEventListener('load', () => { 
+     populateProviders('all'); 
+     if (localStorage.getItem('auth_token')) { 
+         showView('dashboard-view'); 
+         refreshLast(); 
+     } else { 
+         showView('tourist-view'); 
+     } 
+     previewCert.click(); 
+ });
+</script>
+</body>
+</html>

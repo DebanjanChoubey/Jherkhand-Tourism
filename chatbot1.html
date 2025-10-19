@@ -1,0 +1,335 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Jharkhand Darshan</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #052e16; /* Dark Green fallback */
+            background-image: linear-gradient(rgba(5, 39, 46, 0.8), rgba(6, 78, 59, 0.8)), url('JHARU.cms');
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+        }
+        /* Custom scrollbar */
+        #chat-messages::-webkit-scrollbar {
+            width: 6px;
+        }
+        #chat-messages::-webkit-scrollbar-track {
+            background: #064e3b;
+        }
+        #chat-messages::-webkit-scrollbar-thumb {
+            background: #34d399;
+            border-radius: 3px;
+        }
+        #chat-messages::-webkit-scrollbar-thumb:hover {
+            background: #10b981;
+        }
+        /* Typing indicator animation */
+        .typing-indicator span {
+            height: 8px;
+            width: 8px;
+            background-color: #6ee7b7;
+            display: inline-block;
+            border-radius: 50%;
+            animation: bounce 1.4s infinite ease-in-out both;
+        }
+        .typing-indicator span:nth-of-type(1) { animation-delay: -0.32s; }
+        .typing-indicator span:nth-of-type(2) { animation-delay: -0.16s; }
+        @keyframes bounce {
+            0%, 80%, 100% { transform: scale(0); }
+            40% { transform: scale(1.0); }
+        }
+    </style>
+</head>
+<body class="flex items-center justify-center min-h-screen">
+
+    <!-- Chatbot Container -->
+    <div class="w-full max-w-lg h-[90vh] md:h-[80vh] flex flex-col bg-gray-900/70 backdrop-blur-xl rounded-2xl shadow-2xl m-4 border border-green-500/50">
+
+        <!-- Header -->
+        <header class="bg-gradient-to-r from-emerald-800 to-green-800 text-white p-4 flex items-center justify-between rounded-t-2xl shadow-lg flex-shrink-0">
+            <div class="flex items-center space-x-3">
+                 <!-- Bot Avatar -->
+                <div class="w-12 h-12 bg-white/20 rounded-full flex items-center justify-center ring-2 ring-white/50">
+                    <svg class="w-8 h-8 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                      <path stroke-linecap="round" stroke-linejoin="round" d="M12 21a9.004 9.004 0 008.716-6.747M12 21a9.004 9.004 0 01-8.716-6.747M12 21c2.485 0 4.5-4.03 4.5-9S14.485 3 12 3m0 18c-2.485 0-4.5-4.03-4.5-9S9.515 3 12 3m0 0a8.997 8.997 0 017.843 4.582M12 3a8.997 8.997 0 00-7.843 4.582m15.686 0A11.953 11.953 0 0112 10.5c-2.998 0-5.74-1.1-7.843-2.918m15.686 0A8.959 8.959 0 0121 12c0 .778-.099 1.533-.284 2.253m0 0A17.919 17.919 0 0112 16.5c-3.162 0-6.133-.815-8.716-2.247m0 0A9.015 9.015 0 013 12c0-1.605.42-3.113 1.157-4.418" />
+                    </svg>
+                </div>
+                <div>
+                    <h1 id="chat-title" class="text-xl font-bold">Jharkhand Darshan</h1>
+                    <div class="flex items-center space-x-2">
+                        <span class="w-2.5 h-2.5 bg-green-400 rounded-full animate-pulse"></span>
+                        <p id="chat-status" class="text-sm text-green-200">Online</p>
+                    </div>
+                </div>
+            </div>
+            <div id="language-switcher" class="flex flex-wrap justify-end gap-1 max-w-[150px]">
+                <button onclick="setLanguage('en')" class="text-xs font-semibold bg-white/10 px-2 py-1 rounded-md hover:bg-white/20 transition-colors">EN</button>
+                <button onclick="setLanguage('hi')" class="text-xs font-semibold bg-white/10 px-2 py-1 rounded-md hover:bg-white/20 transition-colors">HI</button>
+                <button onclick="setLanguage('bn')" class="text-xs font-semibold bg-white/10 px-2 py-1 rounded-md hover:bg-white/20 transition-colors">BN</button>
+                <button onclick="setLanguage('sat')" class="text-xs font-semibold bg-white/10 px-2 py-1 rounded-md hover:bg-white/20 transition-colors">SAT</button>
+                <button onclick="setLanguage('ta')" class="text-xs font-semibold bg-white/10 px-2 py-1 rounded-md hover:bg-white/20 transition-colors">TA</button>
+                <button onclick="setLanguage('te')" class="text-xs font-semibold bg-white/10 px-2 py-1 rounded-md hover:bg-white/20 transition-colors">TE</button>
+            </div>
+        </header>
+
+        <!-- Chat Messages Area -->
+        <main id="chat-messages" class="flex-1 p-6 overflow-y-auto bg-black/20 space-y-4">
+            <!-- Messages will be appended here -->
+        </main>
+        
+        <!-- Typing Indicator Placeholder -->
+        <div id="typing-indicator-container" class="px-6 pb-2 hidden bg-black/20">
+             <div class="flex items-center space-x-3">
+                <div class="w-10 h-10 bg-gray-700 rounded-full flex items-center justify-center flex-shrink-0">
+                   <svg class="w-6 h-6 text-gray-400" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                     <path stroke-linecap="round" stroke-linejoin="round" d="M12 21a9.004 9.004 0 008.716-6.747M12 21a9.004 9.004 0 01-8.716-6.747M12 21c2.485 0 4.5-4.03 4.5-9S14.485 3 12 3m0 18c-2.485 0-4.5-4.03-4.5-9S9.515 3 12 3m0 0a8.997 8.997 0 017.843 4.582M12 3a8.997 8.997 0 00-7.843 4.582m15.686 0A11.953 11.953 0 0112 10.5c-2.998 0-5.74-1.1-7.843-2.918m15.686 0A8.959 8.959 0 0121 12c0 .778-.099 1.533-.284 2.253m0 0A17.919 17.919 0 0112 16.5c-3.162 0-6.133-.815-8.716-2.247m0 0A9.015 9.015 0 013 12c0-1.605.42-3.113 1.157-4.418" />
+                   </svg>
+                </div>
+                <div class="bg-gray-700 text-white p-3 rounded-lg rounded-bl-none max-w-xs typing-indicator">
+                    <span></span><span></span><span></span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Input Area -->
+        <footer class="p-4 bg-gray-900/50 border-t border-green-500/30 rounded-b-2xl flex-shrink-0">
+            <div class="flex items-center space-x-2">
+                <input type="text" id="user-input" placeholder="Ask about your trip..." class="w-full px-4 py-3 border border-green-500/50 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 transition-shadow bg-gray-800/80 text-white placeholder-gray-400">
+                <button id="send-btn" class="bg-green-600 text-white p-3 rounded-lg hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2 focus:ring-offset-gray-900 transition-transform transform hover:scale-105 disabled:bg-slate-400">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M6 12L3.269 3.126A59.768 59.768 0 0121.485 12 59.77 59.77 0 013.27 20.876L5.999 12zm0 0h7.5" />
+                    </svg>
+                </button>
+            </div>
+        </footer>
+
+    </div>
+
+    <script>
+        const chatMessages = document.getElementById('chat-messages');
+        const userInput = document.getElementById('user-input');
+        const sendBtn = document.getElementById('send-btn');
+        const typingIndicator = document.getElementById('typing-indicator-container');
+        const chatTitle = document.getElementById('chat-title');
+        const chatStatus = document.getElementById('chat-status');
+
+        let currentLanguage = 'en';
+
+        const translations = {
+            en: {
+                title: 'Jharkhand Darshan', status: 'Online', placeholder: 'Ask about your trip...',
+                welcome: "Johar! Welcome to Jharkhand Darshan, your official travel guide. How can I assist you? You can ask me anything or select a topic to begin.",
+                quickReplies: ['Explore Destinations', 'Local Culture', 'Cuisine Guide', 'Travel Info'],
+                responses: {
+                    greeting: "Johar! Welcome to Jharkhand Darshan. How can I assist you in planning your journey today?",
+                    destinations: "Jharkhand is home to breathtaking destinations. Are you interested in the majestic waterfalls of Ranchi, the serene hills of Netarhat, or the sacred temples of Deoghar?",
+                    culture: "The state's culture is vibrant and diverse. You can explore traditional Sohrai and Khovar paintings, witness the intricate metalwork of Dokra art, or find beautiful bamboo crafts.",
+                    transport: "Getting around Jharkhand is convenient. Major cities have good rail and road connectivity. For local travel, taxis and auto-rickshaws are widely available.",
+                    food: "The local cuisine offers a unique culinary experience. We recommend trying traditional dishes such as Dhuska, Rugra, and Litti Chokha.",
+                    thanks: "You're most welcome. Is there anything else I can help you with for your trip?",
+                    fallback: "I can only provide information related to tourism in Jharkhand. Please ask about destinations, culture, food, or transportation."
+                }
+            },
+            hi: {
+                title: 'झारखंड दर्शन', status: 'ऑनलाइन', placeholder: 'अपनी यात्रा के बारे में पूछें...',
+                welcome: "जोहार! झारखंड दर्शन में आपका स्वागत है, आपका आधिकारिक यात्रा गाइड। मैं आपकी कैसे सहायता कर सकता हूं? आप मुझसे कुछ भी पूछ सकते हैं या शुरू करने के लिए कोई विषय चुन सकते हैं।",
+                quickReplies: ['गंतव्य खोजें', 'स्थानीय संस्कृति', 'व्यंजन गाइड', 'यात्रा जानकारी'],
+                responses: {
+                    greeting: "जोहार! झारखंड दर्शन में आपका स्वागत है। आज मैं आपकी यात्रा की योजना बनाने में कैसे सहायता कर सकता हूँ?",
+                    destinations: "झारखंड लुभावने स्थलों का घर है। क्या आप रांची के राजसी झरनों, नेतरहाट की शांत पहाड़ियों, या देवघर के पवित्र मंदिरों में रुचि रखते हैं?",
+                    culture: "राज्य की संस्कृति जीवंत और विविध है। आप पारंपरिक सोहराई और खोवर चित्रों का पता लगा सकते हैं, डोकरा कला के जटिल धातु शिल्प को देख सकते हैं, या सुंदर बांस शिल्प पा सकते हैं।",
+                    transport: "झारखंड में घूमना सुविधाजनक है। प्रमुख शहरों में अच्छी रेल और सड़क कनेक्टिविटी है। स्थानीय यात्रा के लिए, टैक्सी और ऑटो-रिक्शा व्यापक रूप से उपलब्ध हैं।",
+                    food: "स्थानीय व्यंजन एक अनूठा पाक अनुभव प्रदान करता है। हम झारखंड के प्रामाणिक स्वाद के लिए धुस्का, रुगड़ा और लिट्टी चोखा जैसे पारंपरिक व्यंजनों को आज़माने की सलाह देते हैं।",
+                    thanks: "आपका बहुत-बहुत स्वागत है। क्या मैं आपकी यात्रा के लिए और कुछ मदद कर सकता हूँ?",
+                    fallback: "मैं केवल झारखंड में पर्यटन से संबंधित जानकारी प्रदान कर सकता हूं। कृपया स्थलों, संस्कृति, भोजन या परिवहन के बारे में पूछें।"
+                }
+            },
+            bn: {
+                title: 'ঝাড়খণ্ড দর্শন', status: 'অনলাইন', placeholder: 'আপনার ভ্রমণ সম্পর্কে জিজ্ঞাসা করুন...',
+                welcome: 'জোহার! ঝাড়খণ্ড দর্শনে আপনাকে স্বাগত। আমি আপনাকে কিভাবে সাহায্য করতে পারি? আপনি একটি বিষয় জিজ্ঞাসা বা নির্বাচন করতে পারেন।',
+                quickReplies: ['গন্তব্যগুলি', 'স্থানীয় সংস্কৃতি', 'খাদ্য নির্দেশিকা', 'ভ্রমণ তথ্য'],
+                responses: {
+                    greeting: "জোহার! ঝাড়খণ্ড দর্শনে আপনাকে স্বাগত। আজ আমি আপনার যাত্রার পরিকল্পনায় কিভাবে সাহায্য করতে পারি?",
+                    destinations: "ঝাড়খণ্ডে মনোরম গন্তব্যস্থল রয়েছে। আপনি কি রাঁচির জলপ্রপাত, নেতারহাটের পাহাড়, নাকি দেওঘরের মন্দিরে আগ্রহী?",
+                    culture: "রাজ্যের সংস্কৃতি অত্যন্ত প্রাণবন্ত। আপনি ঐতিহ্যবাহী সোহরাই এবং খোভার চিত্রাঙ্কন, ডোকরা শিল্পের কাজ এবং সুন্দর বাঁশের কারুশিল্প দেখতে পারেন।",
+                    transport: "ঝাড়খণ্ডে যাতায়াত বেশ সুবিধাজনক। প্রধান শহরগুলি রেল এবং সড়ক দ্বারা ভালোভাবে সংযুক্ত। স্থানীয় ভ্রমণের জন্য ট্যাক্সি এবং অটোরিকশা পাওয়া যায়।",
+                    food: "স্থানীয় খাবার এক অসাধারণ অভিজ্ঞতা। আমরা আপনাকে धुस्কা, रुगड़ा এবং लिट्टी चोखा-এর মতো ঐতিহ্যবাহী খাবার চেখে দেখার পরামর্শ দিই।",
+                    thanks: "আপনাকে অনেক ধন্যবাদ। আমি কি আপনার যাত্রার জন্য আর কোনো সাহায্য করতে পারি?",
+                    fallback: "আমি শুধু ঝাড়খণ্ডের পর্যটন সম্পর্কিত তথ্য দিতে পারি। অনুগ্রহ করে গন্তব্য, সংস্কৃতি, খাবার বা পরিবহন সম্পর্কে জিজ্ঞাসা করুন।"
+                }
+            },
+            sat: { // Santali (Romanized)
+                title: 'Jharkhand Nepel', status: 'Online', placeholder: 'Abenah׳ yatra babot kuli me...',
+                welcome: 'Johar! Jharkhand Darshan re sagun daram. Ched leka te goṛo daṛe abena? Aap ben kichhu kuli daṛe āh se ek ṭī বিষয় ben bachao daṛe āh.',
+                quickReplies: ['Senoh׳ jāgā', 'Thānik saṁskṛti', 'Jom guide', 'Yatra jaankari'],
+                responses: {
+                    greeting: "Johar! Jharkhand Darshan re sagun daram. Tehen abenah׳ yatra plan re che leka te goṛo daṛe abena?",
+                    destinations: "Jharkhand re aneko sundor jāgā menah׳ ā. Aaben ki Ranchi rā waterfall, Netarhat rā buru, se Deoghar rā mandir re interested menah׳ bena?",
+                    culture: "Noā rāj rā saṁskṛti khub jīot menah׳ ā. Aap ben Sohrai ār Khovar painting, Dokra art, ār sundor bããs rā kārigori ńel daṛe āh.",
+                    transport: "Jharkhand re calācalāḱ suvidhājanak ge. Mukhya śahar rail ār saṛak dwārā bhଲ bhāb re joṛāo menah׳ ā.",
+                    food: "Thānik jom ek anokha anubhav ceṭāh׳ ā. Āliṅ Dhuska, Rugra, ār Litti Chokha lekan paramparik jom try lāgiṭ salah׳ emoh׳ aliṅ.",
+                    thanks: "Aḍi aḍi sārhāo. Ār ched goṛo darken abenah׳ yatra lāgiṭ?",
+                    fallback: "Iṅ sirf Jharkhand rā paryatan sambandhit jānakāri em daṛe āh. Dayākāte jāgā, saṁskṛti, jom, se parivahan bāre te kuli me."
+                }
+            },
+            ta: {
+                title: 'ஜார்க்கண்ட் தர்ஷன்', status: 'ஆன்லைனில்', placeholder: 'உங்கள் பயணம் பற்றி கேளுங்கள்...',
+                welcome: 'ஜோஹர்! ஜார்க்கண்ட் தர்ஷனுக்கு வரவேற்கிறோம். நான் உங்களுக்கு எப்படி உதவ முடியும்? நீங்கள் எதையும் கேட்கலாம் அல்லது தொடங்க ஒரு தலைப்பைத் தேர்ந்தெடுக்கலாம்.',
+                quickReplies: ['இடங்களைக் கண்டறியவும்', 'உள்ளூர் கலாச்சாரம்', 'உணவு வழிகாட்டி', 'பயணத் தகவல்'],
+                responses: {
+                    greeting: "ஜோஹர்! ஜார்க்கண்ட் தர்ஷனுக்கு வரவேற்கிறோம். இன்று உங்கள் பயணத்தைத் திட்டமிடுவதில் நான் எப்படி உதவ முடியும்?",
+                    destinations: "ஜார்க்கண்டில் அற்புதமான இடங்கள் உள்ளன. ராஞ்சியின் நீர்வீழ்ச்சிகள், நேதர்ஹாட்டின் மலைகள் அல்லது தியோகரின் கோயில்களில் நீங்கள் ஆர்வமாக உள்ளீர்களா?",
+                    culture: "மாநிலத்தின் கலாச்சாரம் மிகவும் துடிப்பானது. நீங்கள் பாரம்பரிய சோஹ்ராய் மற்றும் கோவர் ஓவியங்கள், டோக்ரா கலை மற்றும் அழகான மூங்கில் கைவினைப்பொருட்களைக் காணலாம்.",
+                    transport: "ஜார்க்கண்டில் பயணம் செய்வது வசதியானது. முக்கிய நகரங்கள் ரயில் மற்றும் சாலை வழியாக நன்கு இணைக்கப்பட்டுள்ளன. உள்ளூர் பயணங்களுக்கு டாக்சிகள் மற்றும் ஆட்டோக்கள் உள்ளன.",
+                    food: "உள்ளூர் உணவு ஒரு தனித்துவமான அனுபவத்தை அளிக்கிறது. உண்மையான சுவைக்காக துஸ்கா, ருக்ரா மற்றும் லிட்டி சோக்கா போன்ற பாரம்பரிய உணவுகளை முயற்சிக்க பரிந்துரைக்கிறோம்.",
+                    thanks: "மிக்க நன்றி. உங்கள் பயணத்திற்கு வேறு ஏதாவது உதவி தேவையா?",
+                    fallback: "என்னால் ஜார்க்கண்ட் சுற்றுலா தொடர்பான தகவல்களை மட்டுமே வழங்க முடியும். தயவுசெய்து இடங்கள், கலாச்சாரம், உணவு அல்லது போக்குவரத்து பற்றி கேட்கவும்."
+                }
+            },
+            te: {
+                title: 'జార్ఖండ్ దర్శన్', status: 'ఆన్‌లైన్‌లో', placeholder: 'మీ పర్యటన గురించి అడగండి...',
+                welcome: 'జోహార్! జార్ఖండ్ దర్శన్‌కు స్వాగతం. నేను మీకు ఎలా సహాయపడగలను? మీరు ఏదైనా అడగవచ్చు లేదా ప్రారంభించడానికి ఒక అంశాన్ని ఎంచుకోవచ్చు.',
+                quickReplies: ['గమ్యస్థానాలను అన్వేషించండి', 'స్థానిక సంస్కృతి', 'వంటకాల గైడ్', 'ప్రయాణ సమాచారం'],
+                responses: {
+                    greeting: "జోహార్! జార్ఖండ్ దర్శన్‌కు స్వాగతం. ఈ రోజు మీ ప్రయాణాన్ని ప్లాన్ చేయడంలో నేను మీకు ఎలా సహాయపడగలను?",
+                    destinations: "జార్ఖండ్‌లో అద్భుతమైన గమ్యస్థానాలు ఉన్నాయి. మీకు రాంచీ జలపాతాలు, నేతర్‌హాట్ కొండలు లేదా దేవ్‌ఘర్ దేవాలయాలపై ఆసక్తి ఉందా?",
+                    culture: "రాష్ట్ర సంస్కృతి చాలా ఉత్సాహంగా ఉంటుంది. మీరు సాంప్రదాయ సోహ్రాయ్ మరియు ఖోవర్ పెయింటింగ్స్, డోక్రా కళ మరియు అందమైన వెదురు చేతిపనులను చూడవచ్చు.",
+                    transport: "జార్ఖండ్‌లో ప్రయాణించడం సౌకర్యవంతంగా ఉంటుంది. ప్రధాన నగరాలు రైలు మరియు రహదారి ద్వారా బాగా అనుసంధానించబడి ఉన్నాయి. స్థానిక ప్రయాణానికి టాక్సీలు మరియు ఆటోలు అందుబాటులో ఉన్నాయి.",
+                    food: "స్థానిక వంటకాలు ఒక ప్రత్యేకమైన అనుభవాన్ని అందిస్తాయి. నిజమైన రుచి కోసం మేము ధుస్కా, రుగ్రా మరియు లిట్టి చోఖా వంటి సాంప్రదాయ వంటకాలను ప్రయత్నించమని సిఫార్సు చేస్తున్నాము.",
+                    thanks: "మీకు చాలా ధన్యవాదాలు. మీ పర్యటనకు నేను ఇంకా ఏదైనా సహాయం చేయగలనా?",
+                    fallback: "నేను కేవలం జార్ఖండ్ పర్యాటకానికి సంబంధించిన సమాచారాన్ని మాత్రమే అందించగలను. దయచేసి గమ్యస్థానాలు, సంస్కృతి, ఆహారం లేదా రవాణా గురించి అడగండి."
+                }
+            }
+        };
+
+        const setLanguage = (lang) => {
+            currentLanguage = lang;
+            const t = translations[lang];
+            chatTitle.innerText = t.title;
+            chatStatus.innerText = t.status;
+            userInput.placeholder = t.placeholder;
+            
+            chatMessages.innerHTML = '';
+            setTimeout(() => {
+                appendMessage(t.welcome, 'bot', t.quickReplies);
+            }, 200);
+        };
+        
+        const scrollToBottom = () => {
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+        };
+        
+        const handleQuickReply = (text) => {
+            const quickReplyContainer = document.getElementById('quick-replies');
+            if (quickReplyContainer) {
+                quickReplyContainer.remove();
+            }
+            appendMessage(text, 'user');
+            triggerBotResponse(text);
+        };
+        
+        const appendMessage = (message, sender, options = []) => {
+            const messageContainer = document.createElement('div');
+            const messageWrapper = document.createElement('div');
+            messageWrapper.className = `flex items-start space-x-3 ${sender === 'user' ? 'justify-end' : ''}`;
+            
+            let messageBubbleHtml;
+            if (sender === 'bot') {
+                messageBubbleHtml = `
+                    <div class="w-10 h-10 bg-gray-700 rounded-full flex items-center justify-center flex-shrink-0">
+                        <svg class="w-6 h-6 text-gray-400" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                           <path stroke-linecap="round" stroke-linejoin="round" d="M12 21a9.004 9.004 0 008.716-6.747M12 21a9.004 9.004 0 01-8.716-6.747M12 21c2.485 0 4.5-4.03 4.5-9S14.485 3 12 3m0 18c-2.485 0-4.5-4.03-4.5-9S9.515 3 12 3m0 0a8.997 8.997 0 017.843 4.582M12 3a8.997 8.997 0 00-7.843 4.582m15.686 0A11.953 11.953 0 0112 10.5c-2.998 0-5.74-1.1-7.843-2.918m15.686 0A8.959 8.959 0 0121 12c0 .778-.099 1.533-.284 2.253m0 0A17.919 17.919 0 0112 16.5c-3.162 0-6.133-.815-8.716-2.247m0 0A9.015 9.015 0 013 12c0-1.605.42-3.113 1.157-4.418" />
+                        </svg>
+                    </div>
+                    <div class="bg-gray-700 text-white p-3 rounded-lg rounded-bl-none max-w-xs md:max-w-md">
+                        <p class="text-sm">${message}</p>
+                    </div>`;
+            } else {
+                messageBubbleHtml = `
+                    <div class="bg-gradient-to-r from-emerald-600 to-green-600 text-white p-3 rounded-lg rounded-br-none max-w-xs md:max-w-md">
+                        <p class="text-sm">${message}</p>
+                    </div>`;
+            }
+            messageWrapper.innerHTML = messageBubbleHtml;
+            messageContainer.appendChild(messageWrapper);
+
+            if (sender === 'bot' && options.length > 0) {
+                const quickReplyContainer = document.createElement('div');
+                quickReplyContainer.id = 'quick-replies';
+                quickReplyContainer.className = 'flex justify-start gap-2 mt-2 ml-12 flex-wrap';
+                
+                options.forEach(optionText => {
+                    const button = document.createElement('button');
+                    button.textContent = optionText;
+                    button.className = 'px-3 py-1 bg-gray-800/80 border border-green-400 text-green-300 rounded-full text-sm hover:bg-green-500 hover:text-white transition-colors';
+                    button.onclick = () => handleQuickReply(optionText);
+                    quickReplyContainer.appendChild(button);
+                });
+                messageContainer.appendChild(quickReplyContainer);
+            }
+            
+            chatMessages.appendChild(messageContainer);
+            scrollToBottom();
+        };
+
+        const getBotResponse = (input) => {
+            const lowerInput = input.toLowerCase();
+            const r = translations[currentLanguage].responses;
+            const t = translations[currentLanguage];
+
+            // A more robust way to check keywords across languages
+            const checkKeywords = (keys) => keys.some(key => lowerInput.includes(key));
+            
+            if (checkKeywords(['hello', 'hi', 'johar', 'नमस्ते', 'जोहार', 'জোহার', 'வணக்கம்', 'నమస్కారం'])) return r.greeting;
+            if (checkKeywords(['destination', 'place', 'visit', 'explore', 'गंतव्य', 'গন্তব্য', 'இடம்', 'గమ్యస్థానం'])) return r.destinations;
+            if (checkKeywords(['culture', 'artisan', 'craft', 'संस्कृति', 'সংস্কৃতি', 'கலாச்சாரம்', 'సంస్కృతి'])) return r.culture;
+            if (checkKeywords(['transport', 'travel', 'get around', 'परिवहन', 'यात्रा', 'পরিবহন', 'போக்குவரத்து', 'రవాణా'])) return r.transport;
+            if (checkKeywords(['food', 'eat', 'cuisine', 'भोजन', 'खाना', 'খাবার', 'உணவு', 'వంటకం'])) return r.food;
+            if (checkKeywords(['thank', 'धन्यवाद', 'ধন্যবাদ', 'நன்றி', 'ధన్యవాదాలు'])) return r.thanks;
+            
+            return r.fallback;
+        };
+
+        const triggerBotResponse = (message) => {
+            typingIndicator.classList.remove('hidden');
+scrollToBottom();
+
+            setTimeout(() => {
+                const botResponse = getBotResponse(message);
+                typingIndicator.classList.add('hidden');
+                appendMessage(botResponse, 'bot');
+            }, 1000 + Math.random() * 500);
+        }
+
+        const sendMessage = () => {
+            const message = userInput.value.trim();
+            if (message === '') return;
+
+            appendMessage(message, 'user');
+            userInput.value = '';
+            
+            triggerBotResponse(message);
+        };
+
+        sendBtn.addEventListener('click', sendMessage);
+        userInput.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter') {
+                sendMessage();
+            }
+        });
+
+        window.addEventListener('load', () => {
+            setLanguage(currentLanguage);
+        });
+    </script>
+</body>
+</html>
+

@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Jharkhand AR/VR Experiences</title>
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    
+    <link rel="stylesheet" href="style1.css">
+</head>
+<body class="antialiased">
+
+    <header class="shadow-lg sticky top-0 z-50 bg-surface">
+        <div class="container mx-auto px-4 py-4 text-center flex justify-between items-center">
+            <div>
+                <h1 class="text-3xl font-bold tracking-wide text-heading">Immersive Journeys of Jharkhand</h1>
+                <p class="mt-1 text-subheading">Explore iconic sites through AR and VR</p>
+            </div>
+            <button id="theme-toggle" class="p-2 rounded-full transition-colors duration-300">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-6 h-6 theme-icon">
+                </svg>
+            </button>
+        </div>
+    </header>
+
+    <main class="container mx-auto px-4 py-12">
+        <section class="text-center mb-12">
+            <h2 class="text-3xl font-bold mb-2 text-heading">Discover Popular Places</h2>
+            <p class="max-w-2xl mx-auto text-subheading">
+               Take a virtual tour of the most beloved landmarks and natural wonders that Jharkhand has to offer.
+            </p>
+        </section>
+
+        <section class="mb-12">
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+
+                <div class="bg-surface rounded-xl shadow-lg overflow-hidden transform transition-all duration-300 hover:scale-105 hover:shadow-2xl group relative">
+                    <img src="https://placehold.co/600x400/1e293b/a5f3fc?text=Hundru+Falls+VR" alt="Hundru Falls" class="w-full h-48 object-cover transition-transform duration-500 group-hover:scale-110">
+                    <div class="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                    <div class="p-6 relative z-10">
+                        <h3 class="text-2xl font-semibold mb-2 text-heading">Hundru Falls</h3>
+                        <p class="text-sm mb-4 text-subheading">A breathtaking 360° virtual tour of the majestic Hundru Falls and its surrounding lush landscape.</p>
+                        <button class="launch-ar-vr-btn w-full bg-emerald-500 text-slate-900 font-bold py-3 px-4 rounded-full text-sm hover:bg-emerald-400 transition-colors shadow-lg" data-site="Hundru Falls" data-image-url="https://placehold.co/600x400/1e293b/a5f3fc?text=Hundru+Falls+VR">
+                            Launch Experience
+                        </button>
+                    </div>
+                </div>
+
+                <div class="bg-surface rounded-xl shadow-lg overflow-hidden transform transition-all duration-300 hover:scale-105 hover:shadow-2xl group relative">
+                    <img src="https://placehold.co/600x400/1e293b/a5f3fc?text=Baidyanath+Dham+VR" alt="Baidyanath Dham Temple" class="w-full h-48 object-cover transition-transform duration-500 group-hover:scale-110">
+                    <div class="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                    <div class="p-6 relative z-10">
+                        <h3 class="text-2xl font-semibold mb-2 text-heading">Baidyanath Dham</h3>
+                        <p class="text-sm mb-4 text-subheading">An immersive journey through the sacred grounds of this ancient Jyotirlinga temple, revered by millions.</p>
+                        <button class="launch-ar-vr-btn w-full bg-emerald-500 text-slate-900 font-bold py-3 px-4 rounded-full text-sm hover:bg-emerald-400 transition-colors shadow-lg" data-site="Baidyanath Dham" data-image-url="https://placehold.co/600x400/1e293b/a5f3fc?text=Baidyanath+Dham+VR">
+                            Launch Experience
+                        </button>
+                    </div>
+                </div>
+
+                <div class="bg-surface rounded-xl shadow-lg overflow-hidden transform transition-all duration-300 hover:scale-105 hover:shadow-2xl group relative">
+                    <img src="https://placehold.co/600x400/1e293b/a5f3fc?text=Betla+National+Park+VR" alt="Betla National Park" class="w-full h-48 object-cover transition-transform duration-500 group-hover:scale-110">
+                    <div class="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                    <div class="p-6 relative z-10">
+                        <h3 class="text-2xl font-semibold mb-2 text-heading">Betla National Park</h3>
+                        <p class="text-sm mb-4 text-subheading">Go on a virtual safari and experience the diverse wildlife and lush flora of the park in stunning detail.</p>
+                        <button class="launch-ar-vr-btn w-full bg-emerald-500 text-slate-900 font-bold py-3 px-4 rounded-full text-sm hover:bg-emerald-400 transition-colors shadow-lg" data-site="Betla National Park" data-image-url="https://placehold.co/600x400/1e293b/a5f3fc?text=Betla+National+Park+VR">
+                            Launch Experience
+                        </button>
+                    </div>
+                </div>
+
+                <div class="bg-surface rounded-xl shadow-lg overflow-hidden transform transition-all duration-300 hover:scale-105 hover:shadow-2xl group relative">
+                    <img src="https://placehold.co/600x400/1e293b/a5f3fc?text=Dassam+Falls+VR" alt="Dassam Falls" class="w-full h-48 object-cover transition-transform duration-500 group-hover:scale-110">
+                    <div class="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                    <div class="p-6 relative z-10">
+                        <h3 class="text-2xl font-semibold mb-2 text-heading">Dassam Falls</h3>
+                        <p class="text-sm mb-4 text-subheading">Discover the mesmerizing multi-layered cascade of Dassam Falls and the tranquil ambiance of its surroundings. A truly captivating natural spectacle.</p>
+                        <button class="launch-ar-vr-btn w-full bg-emerald-500 text-slate-900 font-bold py-3 px-4 rounded-full text-sm hover:bg-emerald-400 transition-colors shadow-lg" data-site="Dassam Falls" data-image-url="https://placehold.co/600x400/1e293b/a5f3fc?text=Dassam+Falls+VR">
+                            Launch Experience
+                        </button>
+                    </div>
+                </div>
+                
+                <div class="bg-surface rounded-xl shadow-lg overflow-hidden transform transition-all duration-300 hover:scale-105 hover:shadow-2xl group relative">
+                    <img src="https://placehold.co/600x400/1e293b/a5f3fc?text=Parasnath+Hill+VR" alt="Parasnath Hill" class="w-full h-48 object-cover transition-transform duration-500 group-hover:scale-110">
+                    <div class="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                    <div class="p-6 relative z-10">
+                        <h3 class="text-2xl font-semibold mb-2 text-heading">Parasnath Hill</h3>
+                        <p class="text-sm mb-4 text-subheading">A pilgrimage and trekking journey to the highest peak in Jharkhand, a holy site for Jains and Santals.</p>
+                        <button class="launch-ar-vr-btn w-full bg-emerald-500 text-slate-900 font-bold py-3 px-4 rounded-full text-sm hover:bg-emerald-400 transition-colors shadow-lg" data-site="Parasnath Hill" data-image-url="https://placehold.co/600x400/1e293b/a5f3fc?text=Parasnath+Hill+VR">
+                            Launch Experience
+                        </button>
+                    </div>
+                </div>
+
+                <div class="bg-surface rounded-xl shadow-lg overflow-hidden transform transition-all duration-300 hover:scale-105 hover:shadow-2xl group relative">
+                    <img src="https://placehold.co/600x400/1e293b/a5f3fc?text=Netarhat+VR" alt="Netarhat" class="w-full h-48 object-cover transition-transform duration-500 group-hover:scale-110">
+                    <div class="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                    <div class="p-6 relative z-10">
+                        <h3 class="text-2xl font-semibold mb-2 text-heading">Netarhat</h3>
+                        <p class="text-sm mb-4 text-subheading">Experience the serene beauty of the "Queen of Chotanagpur," known for its breathtaking sunrises and sunsets.</p>
+                        <button class="launch-ar-vr-btn w-full bg-emerald-500 text-slate-900 font-bold py-3 px-4 rounded-full text-sm hover:bg-emerald-400 transition-colors shadow-lg" data-site="Netarhat" data-image-url="https://placehold.co/600x400/1e293b/a5f3fc?text=Netarhat+VR">
+                            Launch Experience
+                        </button>
+                    </div>
+                </div>
+
+                <div class="bg-surface rounded-xl shadow-lg overflow-hidden transform transition-all duration-300 hover:scale-105 hover:shadow-2xl group relative">
+                    <img src="https://placehold.co/600x400/1e293b/a5f3fc?text=Tribal+Villages+VR" alt="Tribal Heritage Villages" class="w-full h-48 object-cover transition-transform duration-500 group-hover:scale-110">
+                    <div class="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                    <div class="p-6 relative z-10">
+                        <h3 class="text-2xl font-semibold mb-2 text-heading">Tribal Heritage Villages</h3>
+                        <p class="text-sm mb-4 text-subheading">Step into the heart of Jharkhand's indigenous culture with a virtual tour of authentic tribal villages and their unique traditions.</p>
+                        <button class="launch-ar-vr-btn w-full bg-emerald-500 text-slate-900 font-bold py-3 px-4 rounded-full text-sm hover:bg-emerald-400 transition-colors shadow-lg" data-site="Tribal Heritage Villages" data-image-url="https://placehold.co/600x400/1e293b/a5f3fc?text=Tribal+Villages+VR">
+                            Launch Experience
+                        </button>
+                    </div>
+                </div>
+
+                <div class="bg-surface rounded-xl shadow-lg overflow-hidden transform transition-all duration-300 hover:scale-105 hover:shadow-2xl group relative">
+                    <img src="https://placehold.co/600x400/1e293b/a5f3fc?text=Rajrappa+Temple+VR" alt="Rajrappa Temple" class="w-full h-48 object-cover transition-transform duration-500 group-hover:scale-110">
+                    <div class="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                    <div class="p-6 relative z-10">
+                        <h3 class="text-2xl font-semibold mb-2 text-heading">Rajrappa</h3>
+                        <p class="text-sm mb-4 text-subheading">Explore the sacred Chhinnamasta Temple, a revered Shakti Peeth located at the confluence of two rivers.</p>
+                        <button class="launch-ar-vr-btn w-full bg-emerald-500 text-slate-900 font-bold py-3 px-4 rounded-full text-sm hover:bg-emerald-400 transition-colors shadow-lg" data-site="Rajrappa" data-image-url="https://placehold.co/600x400/1e293b/a5f3fc?text=Rajrappa+Temple+VR">
+                            Launch Experience
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <div id="ar-vr-modal" class="ar-vr-modal flex items-center justify-center">
+        <div class="relative rounded-xl shadow-2xl p-6 max-w-4xl mx-4 my-8 w-full bg-surface">
+            <button id="close-modal-btn" class="absolute top-4 right-4 text-subheading hover:text-heading transition-colors">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-8 h-8">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+                </svg>
+            </button>
+            <h3 id="modal-title" class="text-3xl font-bold text-center mb-4 text-heading"></h3>
+            <img id="modal-image" src="" alt="AR/VR Preview" class="w-full rounded-xl mb-4">
+            <p id="modal-description" class="text-center text-subheading"></p>
+        </div>
+    </div>
+
+    <script src="script1.js"></script>
+</body>
+</html>
